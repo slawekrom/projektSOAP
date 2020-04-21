@@ -1,11 +1,14 @@
 package db.model;
 
-import org.hibernate.annotations.Cascade;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@Setter
 @Entity(name = "PERSON")
 public class Person {
 
@@ -24,5 +27,5 @@ public class Person {
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
     @ManyToMany(mappedBy = "actors")
-    private List<Film> films = new ArrayList<Film>();
+    private List<Movie> movies = new ArrayList<Movie>();
 }
