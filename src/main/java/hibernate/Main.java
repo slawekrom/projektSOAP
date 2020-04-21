@@ -1,6 +1,6 @@
 package hibernate;
 
-import db.model.Film;
+import db.model.Movie;
 
 import javax.persistence.EntityManager;
 import java.util.ArrayList;
@@ -13,9 +13,9 @@ public class Main {
         EntityManager entityManager = FactoryHibernate.getEm();
 
         //do testowania połączenia
-        List<Film> result = new ArrayList<Film>();
+        List<Movie> result = new ArrayList<Movie>();
         entityManager.getTransaction().begin();
-        result = entityManager.createQuery("from FILM", Film.class).getResultList();
+        result = entityManager.createQuery("from MOVIE", Movie.class).getResultList();
         entityManager.getTransaction().commit();
         entityManager.close();
         if (result.isEmpty()){
