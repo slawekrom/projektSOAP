@@ -10,7 +10,7 @@ public class Main {
     public static void main(String [] args){
 
         FactoryHibernate factoryHibernate = new FactoryHibernate();
-        EntityManager entityManager = FactoryHibernate.getEm();
+        EntityManager entityManager = factoryHibernate.getEm();
 
         //do testowania połączenia
         List<Movie> result = new ArrayList<Movie>();
