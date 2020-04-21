@@ -10,7 +10,6 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 
 @WebService
@@ -19,11 +18,11 @@ public interface ReservationService {
     @WebMethod
     List<Showing> getAllShowings();
     @WebMethod
-    void addNewReservationToShowing(Showing showing, ArrayList<String> seats);
+    void addNewReservation(Reservation reservation);
     @WebMethod
     void deleteReservation(Reservation reservation);
     @WebMethod
-    void editReservationSeats(Reservation reservation, ArrayList<String> seats);
+    void editReservationSeats(Reservation reservation);
     @WebMethod
     Document getPDFofReservation(Reservation reservation) throws FileNotFoundException, DocumentException;
     @WebMethod
