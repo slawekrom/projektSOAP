@@ -19,7 +19,7 @@ public class Film {
     @Column
     private String description;
     @Column
-    private Image image;
+    private byte[] image;
 
     @OneToOne
     @JoinColumn(name = "ID_PERSON")

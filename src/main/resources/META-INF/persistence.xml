@@ -13,7 +13,7 @@
         <class>db.model.Reservation</class>
         <properties>
             <!-- parametry do zmiany -->
-            <property name="hibernate.connection.url" value="jdbc:mysql://25.59.25.180:3306/loty?useUnicode=tue&amp;useJDBCCompliantTimezoneShift=true&amp;serverTimezone=UTC"/>
+            <property name="hibernate.connection.url" value="jdbc:mysql://localhost:3306/tickets?useUnicode=tue&amp;useJDBCCompliantTimezoneShift=true&amp;serverTimezone=UTC"/>
             <property name="hibernate.connection.driver_class" value="com.mysql.jdbc.Driver"/>
             <property name="hibernate.connection.username" value="slawek"/>
             <property name="hibernate.connection.password" value="password"/>
@@ -25,7 +25,7 @@
             <property name="hibernate.format_sql" value="true"/>
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL8Dialect"/>
             <property name="hbm2ddl.auto" value="update"/>
-            <property name="hibernate.hbm2ddl.auto" value="none"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
             <property name="javax.persistence.schema-generation.database.action" value="none"/>
             <property name="javax.persistence.schema-generation.scripts.action" value="none"/>
             <property name="javax.persistence.schema-generation.scripts.create-target" value="scriptofcreate.sql"/>
