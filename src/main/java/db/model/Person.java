@@ -20,9 +20,9 @@ public class Person {
     private String secondName;
     @Column
     private String pesel;
-    @OneToMany(mappedBy = "PERSON", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @OneToMany(mappedBy = "person", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
-    @ManyToMany(mappedBy = "PERSON")
+    @ManyToMany(mappedBy = "actors")
     private List<Film> films = new ArrayList<Film>();
 }
