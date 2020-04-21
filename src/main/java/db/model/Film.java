@@ -32,7 +32,7 @@ public class Film {
     @Cascade(org.hibernate.annotations.CascadeType.ALL )
     private List<Person> actors = new ArrayList<Person>();
 
-    @OneToMany(mappedBy = "FILM", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @OneToMany(mappedBy = "film", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Showing> showings = new ArrayList<Showing>();
 
 

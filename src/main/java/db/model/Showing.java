@@ -26,7 +26,7 @@ public class Showing {
     @ManyToOne
     @JoinColumn(name = "ID_FILM")
     private Film film;
-    @OneToMany(mappedBy = "SHOWING", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
+    @OneToMany(mappedBy = "showing", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
 }
