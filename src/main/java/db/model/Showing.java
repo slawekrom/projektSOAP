@@ -1,6 +1,7 @@
 package db.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -11,13 +12,14 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity(name = "SHOWING")
 public class Showing {
 
     @Id
     @GeneratedValue(generator="increment")
     @Column(name = "ID_SHOWING", nullable = false)
-    private int id_showing;
+    private long id_showing;
 
     @Column
     private Date date;
@@ -33,4 +35,11 @@ public class Showing {
     @OneToMany(mappedBy = "showing", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
+    public Showing(Date date, Time time, String freePlaces, String occupiedPlaces, Movie movie) {
+        this.date = date;
+        this.time = time;
+        this.freePlaces = freePlaces;
+        this.occupiedPlaces = occupiedPlaces;
+        this.movie = movie;
+    }
 }

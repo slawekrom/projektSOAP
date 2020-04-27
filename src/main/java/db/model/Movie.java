@@ -1,6 +1,8 @@
 package db.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
@@ -11,13 +13,14 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity(name= "MOVIE")
 public class Movie {
 
     @Id
     @GeneratedValue(generator="increment")
     @Column(name = "ID_MOVIE", nullable = false)
-    private int id_movie;
+    private long id_movie;
     @Column
     String title;
     @Column
@@ -30,7 +33,7 @@ public class Movie {
     private Person director;
 
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "MOVIE_PERSON",
+    @JoinTable(name = "MOVIE_ACTOR",
             joinColumns = {@JoinColumn(name = "ID_MOVIE")},
             inverseJoinColumns = {@JoinColumn(name = "ID_PERSON")})
     @Cascade(org.hibernate.annotations.CascadeType.ALL )
@@ -39,5 +42,10 @@ public class Movie {
     @OneToMany(mappedBy = "movie", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Showing> showings = new ArrayList<Showing>();
 
-
+    public Movie(String title, String description, byte[] image, Person director) {
+        this.title = title;
+        this.description = description;
+        this.image = image;
+        this.director = director;
+    }
 }

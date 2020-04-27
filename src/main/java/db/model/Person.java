@@ -1,6 +1,7 @@
 package db.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -9,13 +10,14 @@ import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 @Entity(name = "PERSON")
 public class Person {
 
     @Id
     @GeneratedValue(generator="increment")
     @Column(name = "ID_PERSON", nullable = false)
-    private int id_person;
+    private long id_person;
 
     @Column
     private String firstName;
@@ -28,4 +30,10 @@ public class Person {
 
     @ManyToMany(mappedBy = "actors")
     private List<Movie> movies = new ArrayList<Movie>();
+
+    public Person(String firstName, String secondName, String pesel) {
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.pesel = pesel;
+    }
 }
