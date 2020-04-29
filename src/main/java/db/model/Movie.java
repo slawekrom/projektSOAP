@@ -8,6 +8,7 @@ import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.awt.Image;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 @Entity(name= "MOVIE")
-public class Movie {
+public class Movie implements Serializable {
 
     @Id
     @GeneratedValue(generator="increment")

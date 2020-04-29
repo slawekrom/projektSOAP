@@ -4,6 +4,7 @@ import db.model.Showing;
 import hibernate.FactoryHibernate;
 
 import javax.persistence.EntityManager;
+import java.util.Date;
 import java.util.List;
 
 public class ShowingDao implements Dao<Showing>{
@@ -28,6 +29,13 @@ public class ShowingDao implements Dao<Showing>{
         openTransaction();
         List<Showing> showingList = entityManager.createQuery("FROM SHOWING", Showing.class)
                 .getResultList();
+        commitTransaction();
+        return showingList;
+    }
+    public List<Showing> getByDate(Date date){
+        openTransaction();
+        List<Showing> showingList = entityManager.createQuery("FROM SHOWING WHERE date =:date", Showing.class)
+                .setParameter("date", date).getResultList();
         commitTransaction();
         return showingList;
     }

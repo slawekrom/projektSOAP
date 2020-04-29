@@ -2,59 +2,51 @@ package services;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
+import dao.MovieDao;
+import dao.PersonDao;
+import dao.ReservationDao;
+import dao.ShowingDao;
+import db.model.Movie;
 import db.model.Person;
 import db.model.Reservation;
 import db.model.Showing;
-import hibernate.FactoryHibernate;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.jws.WebService;
+
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.List;
 
+@WebService
 public class ReservationServiceImpl implements ReservationService {
 
+    ShowingDao showingDao = new ShowingDao();
+    ReservationDao reservationDao = new ReservationDao();
+    PersonDao personDao = new PersonDao();
+    MovieDao movieDao = new MovieDao();
+
     public List<Showing> getAllShowings() {
-
-        EntityManager em = FactoryHibernate.getEm();
-        Query query = em.createQuery("select s from SHOWING s", Showing.class);
-        return (List<Showing>) query.getResultList();
+        return showingDao.getAll();
     }
 
-    public void addNewReservation(Reservation reservation) {
-        EntityManager em = FactoryHibernate.getEm();
-        em.getTransaction().begin();
+    public void addNewReservation(String places,Boolean isPaid, long personId, long showingId) {
+        Person person = personDao.getById(personId);
+        Showing showing = showingDao.getById(showingId);
         //TODO Dodawanie miejsc do rezerwacji
-        Person person = em.find(Person.class, reservation.getPerson().getId_person());
-        reservation.setPerson(person);
-        Showing showing = em.find(Showing.class,reservation.getShowing().getId_showing());
-        reservation.setShowing(showing);
-        em.persist(reservation);
-        em.getTransaction().commit();
-        em.close();
+        Reservation reservation = new Reservation(places, isPaid, person, showing);
+        reservationDao.save(reservation);
     }
 
-    public void deleteReservation(Reservation reservation) {
-        EntityManager em = FactoryHibernate.getEm();
-        em.getTransaction().begin();
-        Reservation reservationToRemove = em.find(Reservation.class, reservation.getId_reservation());
-        em.remove(reservationToRemove);
-        em.getTransaction().commit();
-        em.close();
+    public void deleteReservation(long id) {
+        reservationDao.delete(reservationDao.getById(id));
     }
 
-    public void editReservationSeats(Reservation reservation) {
-        EntityManager em = FactoryHibernate.getEm();
-        em.getTransaction().begin();
-        em.merge(reservation);
-        em.getTransaction().commit();
-        em.close();
+    public void editReservation(long id) {
+        reservationDao.update(reservationDao.getById(id));
     }
 
-    public Document getPDFofReservation(Reservation reservation) throws FileNotFoundException, DocumentException {
-        EntityManager em = FactoryHibernate.getEm();
-        Reservation result = em.find(Reservation.class, reservation.getId_reservation());
+    public Document getPDFofReservation(long id) throws FileNotFoundException, DocumentException {
+        Reservation result = reservationDao.getById(id);
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream("reservation.pdf"));
         document.open();
@@ -74,10 +66,18 @@ public class ReservationServiceImpl implements ReservationService {
 
     }
 
-    public List<Reservation> getPersonReservations(Person person) {
-        EntityManager em = FactoryHibernate.getEm();
-        Query query = em.createQuery("select r from Reservation r where r.person = :person", Reservation.class)
-                .setParameter("person", person);
-        return (List<Reservation>) query.getResultList();
+    public List<Reservation> getPersonReservations(long personId) {
+       return personDao.getById(personId).getReservations();
+    }
+
+    public Movie getMovieInfo(long movieId) {
+        return  movieDao.getById(movieId);
+    }
+
+    public Movie getMovieInfoByTitle(String title) {
+        return movieDao.getByTitle(title);
+    }
+    public String echo(){
+        return "asasasasasAs";
     }
 }

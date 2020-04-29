@@ -24,6 +24,13 @@ public class MovieDao implements Dao<Movie> {
         commitTransaction();
         return movie;
     }
+    public Movie getByTitle(String title) {
+        openTransaction();
+        Movie movie = entityManager.createQuery("FROM MOVIE where title = :title", Movie.class)
+                .setParameter("title", title).getSingleResult();
+        commitTransaction();
+        return movie;
+    }
 
     public List<Movie> getAll() {
         openTransaction();
