@@ -3,10 +3,10 @@ package db.model;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 @Entity(name = "SHOWING")
 public class Showing implements Serializable {
 
@@ -25,8 +26,6 @@ public class Showing implements Serializable {
     @Column
     private Date date;
     @Column
-    private Time time;
-    @Column
     private String freePlaces;
     @Column
     private String occupiedPlaces;
@@ -36,9 +35,8 @@ public class Showing implements Serializable {
     @OneToMany(mappedBy = "showing", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
     private List<Reservation> reservations = new ArrayList<Reservation>();
 
-    public Showing(Date date, Time time, String freePlaces, String occupiedPlaces, Movie movie) {
+    public Showing(Date date, String freePlaces, String occupiedPlaces, Movie movie) {
         this.date = date;
-        this.time = time;
         this.freePlaces = freePlaces;
         this.occupiedPlaces = occupiedPlaces;
         this.movie = movie;

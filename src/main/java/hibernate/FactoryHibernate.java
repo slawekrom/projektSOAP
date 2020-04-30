@@ -6,7 +6,7 @@ import javax.persistence.Persistence;
 
 
 public class FactoryHibernate {
-    private static EntityManager em;
+    private static EntityManager em = null;
 
     public FactoryHibernate(){
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("tickets");
@@ -14,6 +14,8 @@ public class FactoryHibernate {
     }
 
     public static EntityManager getEm() {
+        if (em == null)
+            new FactoryHibernate();
         return em;
     }
 }

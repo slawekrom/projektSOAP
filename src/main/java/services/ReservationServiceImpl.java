@@ -57,13 +57,12 @@ public class ReservationServiceImpl implements ReservationService {
         document.add(chunk);
         chunk = new Chunk("Date of screening: " + result.getShowing().getDate());
         document.add(chunk);
-        chunk = new Chunk("Time of screening: " + result.getShowing().getTime());
-        document.add(chunk);
+        /*chunk = new Chunk("Time of screening: " + result.getShowing().getTime());
+        document.add(chunk);*/
         chunk = new Chunk("Places reserved: " + result.getPlaces());
         document.add(chunk);
         document.close();
         return document;
-
     }
 
     public List<Reservation> getPersonReservations(long personId) {
