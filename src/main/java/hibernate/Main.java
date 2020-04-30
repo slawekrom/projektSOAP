@@ -19,7 +19,7 @@ import java.util.*;
 public class Main {
     public static void main(String [] args){
 
-       /* FactoryHibernate factoryHibernate = new FactoryHibernate();
+       FactoryHibernate factoryHibernate = new FactoryHibernate();
         EntityManager entityManager = factoryHibernate.getEm();
 
         //do testowania połączenia
@@ -27,7 +27,7 @@ public class Main {
         PersonDao personDao = new PersonDao();
         Person p = personDao.getById(1);
         MovieDao movieDao = new MovieDao();
-        Movie m = movieDao.getById(1);
+        /*Movie m = movieDao.getById(1);
         ShowingDao showingDao = new ShowingDao();
         Date d = new GregorianCalendar(2020, Calendar.APRIL, 15).getTime();
 
@@ -37,7 +37,9 @@ public class Main {
         ReservationDao reservationDao = new ReservationDao();
         Reservation r = new Reservation("1;2",true,p,s);
         reservationDao.save(r);*/
-        Endpoint.publish("http://localhost:8080/projekt", new ReservationServiceImpl());
+        String ss = movieDao.getById(1).getTitle();
+        System.out.println(ss);
+        /*Endpoint.publish("http://localhost:8080/projekt", new ReservationServiceImpl());*/
         System.out.println("---------------------------");
 
 
