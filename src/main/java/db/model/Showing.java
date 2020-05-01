@@ -32,8 +32,6 @@ public class Showing implements Serializable {
     @ManyToOne
     @JoinColumn(name = "ID_MOVIE")
     private Movie movie;
-    @OneToMany(mappedBy = "showing", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    private List<Reservation> reservations = new ArrayList<Reservation>();
 
     public Showing(Date date, String freePlaces, String occupiedPlaces, Movie movie) {
         this.date = date;
