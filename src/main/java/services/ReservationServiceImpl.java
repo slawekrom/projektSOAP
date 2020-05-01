@@ -34,16 +34,7 @@ public class ReservationServiceImpl implements ReservationService {
     public void addNewReservation(String places,Boolean isPaid, long personId, long showingId) {
         Person person = personDao.getById(personId);
         Showing showing = showingDao.getById(showingId);
-        //TODO Dodawanie miejsc do rezerwacji
-        /*List<String> placesAsList = new ArrayList<>(Arrays.asList(showing.getOccupiedPlaces().split(";")));
-        placesAsList.addAll(Arrays.asList(places.split(";")));*/
         showing.setOccupiedPlaces(addReservedPlaces(places, showing.getOccupiedPlaces()));
-
-        /*List<String> freePlacesAsList = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
-        String[] reservedPlaces = places.split(";");
-        for(String place : reservedPlaces){
-            freePlacesAsList.remove(place);
-        }*/
         showing.setFreePlaces(removeFreePlaces(places, showing.getFreePlaces()));
         showingDao.update(showing);
         Reservation reservation = new Reservation(places, isPaid, person, showing);

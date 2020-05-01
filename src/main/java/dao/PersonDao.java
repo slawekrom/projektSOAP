@@ -28,7 +28,7 @@ public class PersonDao implements Dao<Person>{
     public Person getByPesel(String pesel){
         openTransaction();
         Person person = entityManager.createQuery("FROM PERSON where pesel = :pesel", Person.class)
-                .setParameter("pesel", pesel).getResultList().get(0); // TODO zmienić
+                .setParameter("pesel", pesel).getSingleResult();
         commitTransaction();
         return person;
     }
@@ -36,7 +36,7 @@ public class PersonDao implements Dao<Person>{
         openTransaction();
         Person person = entityManager.createQuery("FROM PERSON where firstName = :firstName AND secondName = :secondName", Person.class)
                 .setParameter("firstName", firstName)
-                .setParameter("secondName",secondName).getResultList().get(0); //TODO
+                .setParameter("secondName",secondName).getSingleResult();
         commitTransaction();
         return person;
     }

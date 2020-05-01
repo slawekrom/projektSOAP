@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import utils.ProgramUtil;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -33,10 +34,10 @@ public class Showing implements Serializable {
     @JoinColumn(name = "ID_MOVIE")
     private Movie movie;
 
-    public Showing(Date date, String freePlaces, String occupiedPlaces, Movie movie) {
+    public Showing(Date date, Movie movie) {
         this.date = date;
-        this.freePlaces = freePlaces;
-        this.occupiedPlaces = occupiedPlaces;
+        this.freePlaces = ProgramUtil.initFreePlaces();
+        this.occupiedPlaces = "";
         this.movie = movie;
     }
 }
