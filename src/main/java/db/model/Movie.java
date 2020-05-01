@@ -26,7 +26,7 @@ public class Movie implements Serializable {
     String title;
     @Column
     private String description;
-    @Column
+    @Column(length = 16777215)
     private byte[] image;
 
     @OneToOne

@@ -26,9 +26,9 @@ public class Showing implements Serializable {
 
     @Column
     private Date date;
-    @Column
+    @Column(columnDefinition="TEXT")
     private String freePlaces;
-    @Column
+    @Column(columnDefinition="TEXT")
     private String occupiedPlaces;
     @ManyToOne
     @JoinColumn(name = "ID_MOVIE")
