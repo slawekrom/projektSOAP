@@ -12,6 +12,7 @@ import db.model.Reservation;
 import db.model.Showing;
 
 import javax.jws.WebService;
+import javax.persistence.NoResultException;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -84,6 +85,29 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public List<Reservation> getPersonReservationsByName(String firstName, String secondName) {
         return reservationDao.getReservationByName(firstName, secondName);
+    }
+
+    @Override
+    public Person getPersonByPesel(String pesel) {
+        return personDao.getByPesel(pesel);
+    }
+
+    @Override
+    public void addPerson(String firstName, String secondName, String pesel) {
+        Person person = new Person(firstName, secondName, pesel);
+        personDao.save(person);
+    }
+
+    @Override
+    public boolean checkIfPersonExist(String pesel) {
+        Person person = null;
+        try {
+            person = personDao.getByPesel(pesel);
+        }
+        catch (NoResultException nre){
+
+        }
+        return person != null;
     }
 
 

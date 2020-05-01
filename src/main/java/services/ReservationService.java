@@ -40,4 +40,10 @@ public interface ReservationService {
     public List<Reservation> getPersonReservationsByPesel(String pesel);
     @WebMethod
     public List<Reservation> getPersonReservationsByName(String firstName, String secondName);
+    @WebMethod
+    Person getPersonByPesel(String pesel);
+    @WebMethod
+    public void addPerson(String firstName, String secondName, String pesel);
+    @WebMethod
+    public boolean checkIfPersonExist(String pesel);
 }
