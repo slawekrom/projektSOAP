@@ -40,8 +40,6 @@ public class Movie implements Serializable {
     @Cascade(org.hibernate.annotations.CascadeType.ALL )
     private List<Person> actors = new ArrayList<Person>();
 
-    @OneToMany(mappedBy = "movie", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    private List<Showing> showings = new ArrayList<Showing>();
 
     public Movie(String title, String description, byte[] image, Person director) {
         this.title = title;
