@@ -85,6 +85,16 @@ public class ReservationServiceImpl implements ReservationService {
         return true;
     }
 
+    @Override
+    public List<Reservation> getPersonReservationsByPesel(String pesel) {
+        return reservationDao.getReservationByPesel(pesel);
+    }
+
+    @Override
+    public List<Reservation> getPersonReservationsByName(String firstName, String secondName) {
+        return reservationDao.getReservationByName(firstName, secondName);
+    }
+
 
     public void deleteReservation(long id) {
         Reservation reservation = reservationDao.getById(id);

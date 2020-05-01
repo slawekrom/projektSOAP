@@ -36,4 +36,8 @@ public interface ReservationService {
     public String echo();
     @WebMethod
     public boolean ifPlacesFree(String places, long showingId);
+    @WebMethod
+    public List<Reservation> getPersonReservationsByPesel(String pesel);
+    @WebMethod
+    public List<Reservation> getPersonReservationsByName(String firstName, String secondName);
 }

@@ -40,6 +40,23 @@ public class ReservationDao implements Dao<Reservation>{
         commitTransaction();
         return reservationList;
     }
+    public List<Reservation> getReservationByPesel(String pesel){
+        openTransaction();
+        List<Reservation> reservationList = entityManager.createQuery("FROM RESERVATION where person.pesel = :pesel", Reservation.class)
+                .setParameter("pesel", pesel)
+                .getResultList();
+        commitTransaction();
+        return reservationList;
+    }
+    public List<Reservation> getReservationByName(String firstName, String secondName){
+        openTransaction();
+        List<Reservation> reservationList = entityManager.createQuery(
+                "FROM RESERVATION where person.firstName = :firstName AND person.secondName = :secondName", Reservation.class)
+                .setParameter("firstName", firstName).setParameter("secondName", secondName)
+                .getResultList();
+        commitTransaction();
+        return reservationList;
+    }
 
     public void save(Reservation reservation) {
         openTransaction();
