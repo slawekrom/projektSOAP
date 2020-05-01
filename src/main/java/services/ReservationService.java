@@ -34,4 +34,6 @@ public interface ReservationService {
     Movie getMovieInfoByTitle(String title);
     @WebMethod
     public String echo();
+    @WebMethod
+    public boolean ifPlacesFree(String places, long showingId);
 }

@@ -26,8 +26,6 @@ public class Person implements Serializable {
     private String secondName;
     @Column
     private String pesel;
-    @OneToMany(mappedBy = "person", cascade={CascadeType.PERSIST,CascadeType.REMOVE})
-    private List<Reservation> reservations = new ArrayList<Reservation>();
 
     @ManyToMany(mappedBy = "actors")
     private List<Movie> movies = new ArrayList<Movie>();

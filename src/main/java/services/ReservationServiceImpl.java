@@ -15,6 +15,8 @@ import javax.jws.WebService;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @WebService
@@ -33,11 +35,60 @@ public class ReservationServiceImpl implements ReservationService {
         Person person = personDao.getById(personId);
         Showing showing = showingDao.getById(showingId);
         //TODO Dodawanie miejsc do rezerwacji
+        /*List<String> placesAsList = new ArrayList<>(Arrays.asList(showing.getOccupiedPlaces().split(";")));
+        placesAsList.addAll(Arrays.asList(places.split(";")));*/
+        showing.setOccupiedPlaces(addReservedPlaces(places, showing.getOccupiedPlaces()));
+
+        /*List<String> freePlacesAsList = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
+        String[] reservedPlaces = places.split(";");
+        for(String place : reservedPlaces){
+            freePlacesAsList.remove(place);
+        }*/
+        showing.setFreePlaces(removeFreePlaces(places, showing.getFreePlaces()));
+        showingDao.update(showing);
         Reservation reservation = new Reservation(places, isPaid, person, showing);
         reservationDao.save(reservation);
     }
+    private String addReservedPlaces(String reservedPlaces, String occupiedPlaces){
+        List<String> placesAsList = new ArrayList<>(Arrays.asList(occupiedPlaces.split(";")));
+        placesAsList.addAll(Arrays.asList(reservedPlaces.split(";")));
+        return String.join(";",placesAsList);
+    }
+    private void updateShowingPlaces(String reservedPlaces, long showingId){
+        Showing showing = showingDao.getById(showingId);
+        List<String> placesAsList = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
+        placesAsList.addAll(Arrays.asList(reservedPlaces.split(";")));
+        showing.setFreePlaces(String.join(";",placesAsList));
+
+        List<String> occupiedPlacesAsList = new ArrayList<>(Arrays.asList(showing.getOccupiedPlaces().split(";")));
+        occupiedPlacesAsList.removeAll(Arrays.asList(reservedPlaces.split(";")));
+        showing.setOccupiedPlaces(String.join(";",occupiedPlacesAsList));
+        showingDao.update(showing);
+    }
+
+    private String removeFreePlaces(String reservedPlaces, String freePlaces){
+        List<String> freePlacesAsList = new ArrayList<>(Arrays.asList(freePlaces.split(";")));
+        String[] reservedPlacesAsArray = reservedPlaces.split(";");
+        for(String place : reservedPlacesAsArray){
+            freePlacesAsList.remove(place);
+        }
+        return String.join(";",freePlacesAsList);
+    }
+    public boolean ifPlacesFree(String places, long showingId){
+        Showing showing = showingDao.getById(showingId);
+        List<String> freePlaces = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
+        String[] reservedPlaces = places.split(";");
+        for (String place : reservedPlaces){
+            if (!freePlaces.contains(place))
+                return false;
+        }
+        return true;
+    }
+
 
     public void deleteReservation(long id) {
+        Reservation reservation = reservationDao.getById(id);
+        updateShowingPlaces(reservation.getPlaces(), reservation.getShowing().getId_showing());
         reservationDao.delete(reservationDao.getById(id));
     }
 
@@ -66,7 +117,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     public List<Reservation> getPersonReservations(long personId) {
-       return personDao.getById(personId).getReservations();
+       return reservationDao.getPersonReservation(personId);
     }
 
     public Movie getMovieInfo(long movieId) {

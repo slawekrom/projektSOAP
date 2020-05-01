@@ -12,9 +12,8 @@ import java.util.List;
 
 @Getter
 @Setter
-@Entity
 @NoArgsConstructor
-@Table(name = "RESERVATION")
+@Entity(name = "RESERVATION")
 public class Reservation implements Serializable {
 
     @Id
