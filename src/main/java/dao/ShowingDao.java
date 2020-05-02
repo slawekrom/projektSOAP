@@ -6,6 +6,7 @@ import hibernate.FactoryHibernate;
 import javax.persistence.EntityManager;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 public class ShowingDao implements Dao<Showing>{
@@ -33,12 +34,14 @@ public class ShowingDao implements Dao<Showing>{
         commitTransaction();
         return showingList;
     }
-    public List<Showing> getByDate(Date date){
+    public List<Showing> getByDate(int year, int month, int day){
+        Date date = new GregorianCalendar(year, month-1, day, 0,0,0).getTime();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
         calendar.add(Calendar.HOUR_OF_DAY, 23);
         calendar.add(Calendar.MINUTE, 59);
         Date dateEvening = calendar.getTime();
+        System.out.println("d1 " + date.toString() + " and  "+ dateEvening.toString());
         openTransaction();
         List<Showing> showingList = entityManager.createQuery("FROM SHOWING WHERE date BETWEEN :start AND :stop", Showing.class)
                 .setParameter("start", date).setParameter("stop", dateEvening).getResultList();

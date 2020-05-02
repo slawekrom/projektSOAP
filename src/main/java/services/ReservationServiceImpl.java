@@ -111,8 +111,8 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @MTOM
-    public List<Showing> getShowingsByDate(Date date) {
-        return showingDao.getByDate(date);
+    public List<Showing> getShowingsByDate(int year, int month, int day) {
+        return showingDao.getByDate(year, month, day);
     }
 
 

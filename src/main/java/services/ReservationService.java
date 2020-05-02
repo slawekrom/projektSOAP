@@ -46,5 +46,5 @@ public interface ReservationService {
     @WebMethod
     public boolean checkIfPersonExist(String pesel);
     @WebMethod
-    public List<Showing> getShowingsByDate(Date date);
+    public List<Showing> getShowingsByDate(int year, int month, int day);
 }
