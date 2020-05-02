@@ -11,18 +11,20 @@ import db.model.Person;
 import db.model.Reservation;
 import db.model.Showing;
 
+import javax.imageio.ImageIO;
 import javax.jws.WebService;
 import javax.persistence.NoResultException;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.soap.MTOM;
 import javax.xml.ws.soap.SOAPBinding;
 
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.awt.image.BufferedImage;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.awt.Image;
 
 @WebService
 @BindingType(value = SOAPBinding.SOAP11HTTP_MTOM_BINDING)
@@ -113,6 +115,20 @@ public class ReservationServiceImpl implements ReservationService {
     @MTOM
     public List<Showing> getShowingsByDate(int year, int month, int day) {
         return showingDao.getByDate(year, month, day);
+    }
+
+    @Override
+    @MTOM
+    public Image getImage(long id) {
+        Image image = null;
+        Movie movie = movieDao.getById(id);
+        ByteArrayInputStream bis = new ByteArrayInputStream(movie.getImage());
+        try {
+            image = ImageIO.read(bis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return image;
     }
 
 

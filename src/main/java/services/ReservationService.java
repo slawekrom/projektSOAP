@@ -10,6 +10,7 @@ import db.model.Showing;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import java.awt.Image;
 import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
@@ -47,4 +48,6 @@ public interface ReservationService {
     public boolean checkIfPersonExist(String pesel);
     @WebMethod
     public List<Showing> getShowingsByDate(int year, int month, int day);
+    @WebMethod
+    public Image getImage(long id);
 }
