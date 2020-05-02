@@ -2,10 +2,7 @@ package services;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
-import dao.MovieDao;
-import dao.PersonDao;
-import dao.ReservationDao;
-import dao.ShowingDao;
+import dao.*;
 import db.model.Movie;
 import db.model.Person;
 import db.model.Reservation;
@@ -54,8 +51,7 @@ public class ReservationServiceImpl implements ReservationService {
         placesAsList.addAll(Arrays.asList(reservedPlaces.split(";")));
         return String.join(";",placesAsList);
     }
-    private void updateShowingPlaces(String reservedPlaces, long showingId){
-        Showing showing = showingDao.getById(showingId);
+    private void updateShowingPlaces(String reservedPlaces, Showing showing){
         List<String> placesAsList = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
         placesAsList.addAll(Arrays.asList(reservedPlaces.split(";")));
         showing.setFreePlaces(String.join(";",placesAsList));
@@ -121,8 +117,8 @@ public class ReservationServiceImpl implements ReservationService {
     @MTOM
     public Image getImage(long id) {
         Image image = null;
-        Movie movie = movieDao.getById(id);
-        ByteArrayInputStream bis = new ByteArrayInputStream(movie.getImage());
+        ImageDao imageDao = new ImageDao();
+        ByteArrayInputStream bis = new ByteArrayInputStream(imageDao.getByMovieId(id).getImage());
         try {
             image = ImageIO.read(bis);
         } catch (IOException e) {
@@ -134,12 +130,21 @@ public class ReservationServiceImpl implements ReservationService {
 
     public void deleteReservation(long id) {
         Reservation reservation = reservationDao.getById(id);
-        updateShowingPlaces(reservation.getPlaces(), reservation.getShowing().getId_showing());
+        Showing showing = reservation.getShowing();
+        updateShowingPlaces(reservation.getPlaces(), showing);
         reservationDao.delete(reservationDao.getById(id));
     }
 
-    public void editReservation(long id) {
-        reservationDao.update(reservationDao.getById(id));
+    public void editReservation(long id, String newPlaces, boolean isPaid) {
+        Reservation reservation = reservationDao.getById(id);
+        Showing showing = reservation.getShowing();
+        updateShowingPlaces(reservation.getPlaces(), showing);
+        showing.setOccupiedPlaces(addReservedPlaces(newPlaces, showing.getOccupiedPlaces()));
+        showing.setFreePlaces(removeFreePlaces(newPlaces, showing.getFreePlaces()));
+        showingDao.update(showing);
+        reservation.setIsPaid(isPaid);
+        reservation.setPlaces(newPlaces);
+        reservationDao.update(reservation);
     }
 
     @MTOM
@@ -155,8 +160,7 @@ public class ReservationServiceImpl implements ReservationService {
         document.add(chunk);
         chunk = new Chunk("Date of screening: " + result.getShowing().getDate());
         document.add(chunk);
-        /*chunk = new Chunk("Time of screening: " + result.getShowing().getTime());
-        document.add(chunk);*/
+        document.add(chunk);
         chunk = new Chunk("Places reserved: " + result.getPlaces());
         document.add(chunk);
         document.close();

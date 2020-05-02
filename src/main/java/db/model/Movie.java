@@ -26,8 +26,6 @@ public class Movie implements Serializable {
     String title;
     @Column
     private String description;
-    @Column(length = 16777215)
-    private byte[] image;
 
     @OneToOne
     @JoinColumn(name = "ID_PERSON")
@@ -41,10 +39,9 @@ public class Movie implements Serializable {
     private List<Person> actors = new ArrayList<Person>();
 
 
-    public Movie(String title, String description, byte[] image, Person director) {
+    public Movie(String title, String description, Person director) {
         this.title = title;
         this.description = description;
-        this.image = image;
         this.director = director;
     }
 }

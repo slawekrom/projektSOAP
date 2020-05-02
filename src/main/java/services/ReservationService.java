@@ -25,7 +25,7 @@ public interface ReservationService {
     @WebMethod
     void deleteReservation(long id);
     @WebMethod
-    void editReservation(long id);
+    void editReservation(long id, String newPlaces, boolean isPaid);
     @WebMethod
     Document getPDFofReservation(long id) throws FileNotFoundException, DocumentException;
     @WebMethod
