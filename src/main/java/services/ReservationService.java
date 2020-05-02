@@ -11,6 +11,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import java.io.FileNotFoundException;
+import java.util.Date;
 import java.util.List;
 
 @WebService
@@ -33,8 +34,6 @@ public interface ReservationService {
     @WebMethod
     Movie getMovieInfoByTitle(String title);
     @WebMethod
-    public String echo();
-    @WebMethod
     public boolean ifPlacesFree(String places, long showingId);
     @WebMethod
     public List<Reservation> getPersonReservationsByPesel(String pesel);
@@ -46,4 +45,6 @@ public interface ReservationService {
     public void addPerson(String firstName, String secondName, String pesel);
     @WebMethod
     public boolean checkIfPersonExist(String pesel);
+    @WebMethod
+    public List<Showing> getShowingsByDate(Date date);
 }

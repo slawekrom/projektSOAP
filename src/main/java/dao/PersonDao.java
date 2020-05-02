@@ -4,6 +4,7 @@ import db.model.Person;
 import hibernate.FactoryHibernate;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import java.util.List;
 
 public class PersonDao implements Dao<Person>{
@@ -27,9 +28,16 @@ public class PersonDao implements Dao<Person>{
 
     public Person getByPesel(String pesel){
         openTransaction();
-        Person person = entityManager.createQuery("FROM PERSON where pesel = :pesel", Person.class)
-                .setParameter("pesel", pesel).getSingleResult();
-        commitTransaction();
+        Person person = null;
+        try {
+            person = entityManager.createQuery("FROM PERSON where pesel = :pesel", Person.class)
+                    .setParameter("pesel", pesel).getSingleResult();
+        }
+        catch (NoResultException nre){
+        }
+        finally {
+            commitTransaction();
+        }
         return person;
     }
     public Person getByFirstAndSecondName(String firstName, String secondName){

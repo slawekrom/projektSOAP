@@ -4,6 +4,7 @@ import db.model.Showing;
 import hibernate.FactoryHibernate;
 
 import javax.persistence.EntityManager;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -33,9 +34,14 @@ public class ShowingDao implements Dao<Showing>{
         return showingList;
     }
     public List<Showing> getByDate(Date date){
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, 23);
+        calendar.add(Calendar.MINUTE, 59);
+        Date dateEvening = calendar.getTime();
         openTransaction();
-        List<Showing> showingList = entityManager.createQuery("FROM SHOWING WHERE date =:date", Showing.class)
-                .setParameter("date", date).getResultList();
+        List<Showing> showingList = entityManager.createQuery("FROM SHOWING WHERE date BETWEEN :start AND :stop", Showing.class)
+                .setParameter("start", date).setParameter("stop", dateEvening).getResultList();
         commitTransaction();
         return showingList;
     }

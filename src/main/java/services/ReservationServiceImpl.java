@@ -13,14 +13,19 @@ import db.model.Showing;
 
 import javax.jws.WebService;
 import javax.persistence.NoResultException;
+import javax.xml.ws.BindingType;
+import javax.xml.ws.soap.MTOM;
+import javax.xml.ws.soap.SOAPBinding;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @WebService
+@BindingType(value = SOAPBinding.SOAP11HTTP_MTOM_BINDING)
 public class ReservationServiceImpl implements ReservationService {
 
     ShowingDao showingDao = new ShowingDao();
@@ -28,6 +33,7 @@ public class ReservationServiceImpl implements ReservationService {
     PersonDao personDao = new PersonDao();
     MovieDao movieDao = new MovieDao();
 
+    @MTOM
     public List<Showing> getAllShowings() {
         return showingDao.getAll();
     }
@@ -100,14 +106,13 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean checkIfPersonExist(String pesel) {
-        Person person = null;
-        try {
-            person = personDao.getByPesel(pesel);
-        }
-        catch (NoResultException nre){
+        return personDao.getByPesel(pesel) != null;
+    }
 
-        }
-        return person != null;
+    @Override
+    @MTOM
+    public List<Showing> getShowingsByDate(Date date) {
+        return showingDao.getByDate(date);
     }
 
 
@@ -121,6 +126,7 @@ public class ReservationServiceImpl implements ReservationService {
         reservationDao.update(reservationDao.getById(id));
     }
 
+    @MTOM
     public Document getPDFofReservation(long id) throws FileNotFoundException, DocumentException {
         Reservation result = reservationDao.getById(id);
         Document document = new Document();
@@ -145,14 +151,13 @@ public class ReservationServiceImpl implements ReservationService {
        return reservationDao.getPersonReservation(personId);
     }
 
+    @MTOM
     public Movie getMovieInfo(long movieId) {
         return  movieDao.getById(movieId);
     }
 
+    @MTOM
     public Movie getMovieInfoByTitle(String title) {
         return movieDao.getByTitle(title);
-    }
-    public String echo(){
-        return "asasasasasAs";
     }
 }
