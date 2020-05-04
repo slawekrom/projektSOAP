@@ -32,9 +32,9 @@ public class ReservationDao implements Dao<Reservation>{
         commitTransaction();
         return reservationList;
     }
-    public List<Reservation> getPersonReservation(long id){
+    public List<Reservation> getUserReservation(long id){
         openTransaction();
-        List<Reservation> reservationList = entityManager.createQuery("FROM RESERVATION where person.id_person = :id", Reservation.class)
+        List<Reservation> reservationList = entityManager.createQuery("FROM RESERVATION where user.id_person = :id", Reservation.class)
                 .setParameter("id", id)
                 .getResultList();
         commitTransaction();
@@ -42,7 +42,7 @@ public class ReservationDao implements Dao<Reservation>{
     }
     public List<Reservation> getReservationByPesel(String pesel){
         openTransaction();
-        List<Reservation> reservationList = entityManager.createQuery("FROM RESERVATION where person.pesel = :pesel", Reservation.class)
+        List<Reservation> reservationList = entityManager.createQuery("FROM RESERVATION where user.pesel = :pesel", Reservation.class)
                 .setParameter("pesel", pesel)
                 .getResultList();
         commitTransaction();
@@ -51,7 +51,7 @@ public class ReservationDao implements Dao<Reservation>{
     public List<Reservation> getReservationByName(String firstName, String secondName){
         openTransaction();
         List<Reservation> reservationList = entityManager.createQuery(
-                "FROM RESERVATION where person.firstName = :firstName AND person.secondName = :secondName", Reservation.class)
+                "FROM RESERVATION where user.firstName = :firstName AND user.secondName = :secondName", Reservation.class)
                 .setParameter("firstName", firstName).setParameter("secondName", secondName)
                 .getResultList();
         commitTransaction();

@@ -2,10 +2,7 @@ package services;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
-import db.model.Movie;
-import db.model.Person;
-import db.model.Reservation;
-import db.model.Showing;
+import db.model.*;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
@@ -23,7 +20,7 @@ public interface ReservationService {
     @WebMethod
     List<Showing> getAllShowings();
     @WebMethod
-    void addNewReservation(String places,Boolean isPaid, long personId, long showingId);
+    void addNewReservation(String places,Boolean isPaid, long userId, long showingId);
     @WebMethod
     void deleteReservation(long id);
     @WebMethod
@@ -31,7 +28,7 @@ public interface ReservationService {
     @WebMethod
     byte[] getPDFofReservation(long id) throws IOException, DocumentException;
     @WebMethod
-    List<Reservation> getPersonReservations(long personId);
+    List<Reservation> getUserReservations(long userId);
     @WebMethod
     Movie getMovieInfo(long movieId);
     @WebMethod
@@ -39,17 +36,19 @@ public interface ReservationService {
     @WebMethod
     public boolean ifPlacesFree(String places, long showingId);
     @WebMethod
-    public List<Reservation> getPersonReservationsByPesel(String pesel);
+    public List<Reservation> getUserReservationsByPesel(String pesel);
     @WebMethod
-    public List<Reservation> getPersonReservationsByName(String firstName, String secondName);
+    public List<Reservation> getUserReservationsByName(String firstName, String secondName);
     @WebMethod
-    Person getPersonByPesel(String pesel);
+    User getUserByPesel(String pesel);
     @WebMethod
-    public void addPerson(String firstName, String secondName, String pesel);
+    public void addUser(String firstName, String secondName, String pesel, String password);
     @WebMethod
-    public boolean checkIfPersonExist(String pesel);
+    public boolean checkIfUserExist(String pesel);
     @WebMethod
     public List<Showing> getShowingsByDate(int year, int month, int day);
+    @WebMethod
+    public boolean authorize(String pesel, String password);
     @WebMethod
     public Image getImage(long id);
 }

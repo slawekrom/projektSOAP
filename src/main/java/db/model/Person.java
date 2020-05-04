@@ -24,13 +24,10 @@ public class Person implements Serializable {
     private String firstName;
     @Column
     private String secondName;
-    @Column
-    private String pesel;
 
 
-    public Person(String firstName, String secondName, String pesel) {
+    public Person(String firstName, String secondName) {
         this.firstName = firstName;
         this.secondName = secondName;
-        this.pesel = pesel;
     }
 }

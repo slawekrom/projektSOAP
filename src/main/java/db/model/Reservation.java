@@ -26,16 +26,16 @@ public class Reservation implements Serializable {
     @Column
     private Boolean isPaid;
     @ManyToOne
-    @JoinColumn(name = "ID_PERSON")
-    private Person person;
+    @JoinColumn(name = "ID_USER")
+    private User user;
     @ManyToOne
     @JoinColumn(name = "ID_SHOWING")
     private Showing showing;
 
-    public Reservation(String places, Boolean isPaid, Person person, Showing showing) {
+    public Reservation(String places, Boolean isPaid, User user, Showing showing) {
         this.places = places;
         this.isPaid = isPaid;
-        this.person = person;
+        this.user = user;
         this.showing = showing;
     }
 }

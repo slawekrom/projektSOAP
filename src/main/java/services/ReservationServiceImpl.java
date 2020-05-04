@@ -3,10 +3,7 @@ package services;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfWriter;
 import dao.*;
-import db.model.Movie;
-import db.model.Person;
-import db.model.Reservation;
-import db.model.Showing;
+import db.model.*;
 
 import javax.imageio.ImageIO;
 import javax.jws.WebService;
@@ -18,11 +15,9 @@ import javax.xml.ws.soap.SOAPBinding;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.awt.Image;
+import java.util.List;
 
 @WebService
 @BindingType(value = SOAPBinding.SOAP11HTTP_MTOM_BINDING)
@@ -30,21 +25,21 @@ public class ReservationServiceImpl implements ReservationService {
 
     ShowingDao showingDao = new ShowingDao();
     ReservationDao reservationDao = new ReservationDao();
-    PersonDao personDao = new PersonDao();
     MovieDao movieDao = new MovieDao();
+    UserDao userDao = new UserDao();
 
     @MTOM
     public List<Showing> getAllShowings() {
         return showingDao.getAll();
     }
 
-    public void addNewReservation(String places, Boolean isPaid, long personId, long showingId) {
-        Person person = personDao.getById(personId);
+    public void addNewReservation(String places, Boolean isPaid, long userId, long showingId) {
+        User user = userDao.getById(userId);
         Showing showing = showingDao.getById(showingId);
         showing.setOccupiedPlaces(addReservedPlaces(places, showing.getOccupiedPlaces()));
         showing.setFreePlaces(removeFreePlaces(places, showing.getFreePlaces()));
         showingDao.update(showing);
-        Reservation reservation = new Reservation(places, isPaid, person, showing);
+        Reservation reservation = new Reservation(places, isPaid, user, showing);
         reservationDao.save(reservation);
     }
 
@@ -86,35 +81,53 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> getPersonReservationsByPesel(String pesel) {
+    public List<Reservation> getUserReservationsByPesel(String pesel) {
         return reservationDao.getReservationByPesel(pesel);
     }
 
     @Override
-    public List<Reservation> getPersonReservationsByName(String firstName, String secondName) {
+    public List<Reservation> getUserReservationsByName(String firstName, String secondName) {
         return reservationDao.getReservationByName(firstName, secondName);
     }
 
     @Override
-    public Person getPersonByPesel(String pesel) {
-        return personDao.getByPesel(pesel);
+    public User getUserByPesel(String pesel) {
+        return userDao.getByPesel(pesel);
     }
 
     @Override
-    public void addPerson(String firstName, String secondName, String pesel) {
-        Person person = new Person(firstName, secondName, pesel);
-        personDao.save(person);
+    public void addUser(String firstName, String secondName, String pesel, String password) {
+
+        User user = new User(firstName, secondName, pesel, encode(password));
+        userDao.save(user);
+    }
+    private String encode(String password){
+        System.out.println("password encoded: " + Base64.getEncoder().encodeToString(password.getBytes()));
+        return Base64.getEncoder().encodeToString(password.getBytes());
+    }
+    private String decode(String password){
+        byte[] decodedBytes = Base64.getDecoder().decode(password);
+        String decodedPassword = new String(decodedBytes);
+        return decodedPassword;
     }
 
     @Override
-    public boolean checkIfPersonExist(String pesel) {
-        return personDao.getByPesel(pesel) != null;
+    public boolean checkIfUserExist(String pesel) {
+        return userDao.getByPesel(pesel) != null;
     }
 
     @Override
     @MTOM
     public List<Showing> getShowingsByDate(int year, int month, int day) {
         return showingDao.getByDate(year, month, day);
+    }
+
+    @Override
+    public boolean authorize(String pesel, String password) {
+        User user = userDao.getByPesel(pesel);
+        if (user == null)
+            return false;
+        else return password.equals(decode(user.getPassword()));
     }
 
     @Override
@@ -157,7 +170,7 @@ public class ReservationServiceImpl implements ReservationService {
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream("resources/" + id + "_reservation.pdf"));
         document.open();
-        Chunk chunk = new Chunk("Person name and surname: " + result.getPerson().getFirstName() + " " + result.getPerson().getSecondName());
+        Chunk chunk = new Chunk("Person name and surname: " + result.getUser().getFirstName() + " " + result.getUser().getSecondName());
         document.add(chunk);
         document.add(new Paragraph());
         chunk = new Chunk("Movie title: " + result.getShowing().getMovie().getTitle());
@@ -174,8 +187,8 @@ public class ReservationServiceImpl implements ReservationService {
         return Files.readAllBytes(f.toPath());
     }
 
-    public List<Reservation> getPersonReservations(long personId) {
-        return reservationDao.getPersonReservation(personId);
+    public List<Reservation> getUserReservations(long userId) {
+        return reservationDao.getUserReservation(userId);
     }
 
     @MTOM
