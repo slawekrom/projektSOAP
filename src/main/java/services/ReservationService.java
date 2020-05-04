@@ -11,7 +11,9 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import java.awt.Image;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +29,7 @@ public interface ReservationService {
     @WebMethod
     void editReservation(long id, String newPlaces, boolean isPaid);
     @WebMethod
-    Document getPDFofReservation(long id) throws FileNotFoundException, DocumentException;
+    byte[] getPDFofReservation(long id) throws IOException, DocumentException;
     @WebMethod
     List<Reservation> getPersonReservations(long personId);
     @WebMethod

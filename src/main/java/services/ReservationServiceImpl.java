@@ -17,6 +17,7 @@ import javax.xml.ws.soap.SOAPBinding;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -37,7 +38,7 @@ public class ReservationServiceImpl implements ReservationService {
         return showingDao.getAll();
     }
 
-    public void addNewReservation(String places,Boolean isPaid, long personId, long showingId) {
+    public void addNewReservation(String places, Boolean isPaid, long personId, long showingId) {
         Person person = personDao.getById(personId);
         Showing showing = showingDao.getById(showingId);
         showing.setOccupiedPlaces(addReservedPlaces(places, showing.getOccupiedPlaces()));
@@ -46,35 +47,38 @@ public class ReservationServiceImpl implements ReservationService {
         Reservation reservation = new Reservation(places, isPaid, person, showing);
         reservationDao.save(reservation);
     }
-    private String addReservedPlaces(String reservedPlaces, String occupiedPlaces){
+
+    private String addReservedPlaces(String reservedPlaces, String occupiedPlaces) {
         List<String> placesAsList = new ArrayList<>(Arrays.asList(occupiedPlaces.split(";")));
         placesAsList.addAll(Arrays.asList(reservedPlaces.split(";")));
-        return String.join(";",placesAsList);
+        return String.join(";", placesAsList);
     }
-    private void updateShowingPlaces(String reservedPlaces, Showing showing){
+
+    private void updateShowingPlaces(String reservedPlaces, Showing showing) {
         List<String> placesAsList = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
         placesAsList.addAll(Arrays.asList(reservedPlaces.split(";")));
-        showing.setFreePlaces(String.join(";",placesAsList));
+        showing.setFreePlaces(String.join(";", placesAsList));
 
         List<String> occupiedPlacesAsList = new ArrayList<>(Arrays.asList(showing.getOccupiedPlaces().split(";")));
         occupiedPlacesAsList.removeAll(Arrays.asList(reservedPlaces.split(";")));
-        showing.setOccupiedPlaces(String.join(";",occupiedPlacesAsList));
+        showing.setOccupiedPlaces(String.join(";", occupiedPlacesAsList));
         showingDao.update(showing);
     }
 
-    private String removeFreePlaces(String reservedPlaces, String freePlaces){
+    private String removeFreePlaces(String reservedPlaces, String freePlaces) {
         List<String> freePlacesAsList = new ArrayList<>(Arrays.asList(freePlaces.split(";")));
         String[] reservedPlacesAsArray = reservedPlaces.split(";");
-        for(String place : reservedPlacesAsArray){
+        for (String place : reservedPlacesAsArray) {
             freePlacesAsList.remove(place);
         }
-        return String.join(";",freePlacesAsList);
+        return String.join(";", freePlacesAsList);
     }
-    public boolean ifPlacesFree(String places, long showingId){
+
+    public boolean ifPlacesFree(String places, long showingId) {
         Showing showing = showingDao.getById(showingId);
         List<String> freePlaces = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
         String[] reservedPlaces = places.split(";");
-        for (String place : reservedPlaces){
+        for (String place : reservedPlaces) {
             if (!freePlaces.contains(place))
                 return false;
         }
@@ -148,32 +152,35 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @MTOM
-    public Document getPDFofReservation(long id) throws FileNotFoundException, DocumentException {
+    public byte[] getPDFofReservation(long id) throws IOException, DocumentException {
         Reservation result = reservationDao.getById(id);
         Document document = new Document();
-        PdfWriter.getInstance(document, new FileOutputStream("reservation.pdf"));
+        PdfWriter.getInstance(document, new FileOutputStream("resources/" + id + "_reservation.pdf"));
         document.open();
-        Font font = FontFactory.getFont(FontFactory.COURIER, 16, BaseColor.BLACK);
-        Chunk chunk = new Chunk("Name: " + result.getPerson().getFirstName() + " " + result.getPerson().getSecondName(), font);
+        Chunk chunk = new Chunk("Person name and surname: " + result.getPerson().getFirstName() + " " + result.getPerson().getSecondName());
         document.add(chunk);
+        document.add(new Paragraph());
         chunk = new Chunk("Movie title: " + result.getShowing().getMovie().getTitle());
         document.add(chunk);
+        document.add(new Paragraph());
         chunk = new Chunk("Date of screening: " + result.getShowing().getDate());
         document.add(chunk);
-        document.add(chunk);
+        document.add(new Paragraph());
         chunk = new Chunk("Places reserved: " + result.getPlaces());
         document.add(chunk);
+        document.add(new Paragraph());
         document.close();
-        return document;
+        File f = new File("resources/" + id + "_reservation.pdf");
+        return Files.readAllBytes(f.toPath());
     }
 
     public List<Reservation> getPersonReservations(long personId) {
-       return reservationDao.getPersonReservation(personId);
+        return reservationDao.getPersonReservation(personId);
     }
 
     @MTOM
     public Movie getMovieInfo(long movieId) {
-        return  movieDao.getById(movieId);
+        return movieDao.getById(movieId);
     }
 
     @MTOM
