@@ -27,8 +27,6 @@ public class Person implements Serializable {
     @Column
     private String pesel;
 
-    @ManyToMany(mappedBy = "actors")
-    private List<Movie> movies = new ArrayList<Movie>();
 
     public Person(String firstName, String secondName, String pesel) {
         this.firstName = firstName;
