@@ -6,6 +6,7 @@ import dao.*;
 import db.model.*;
 
 import javax.imageio.ImageIO;
+import javax.jws.WebParam;
 import javax.jws.WebService;
 import javax.persistence.NoResultException;
 import javax.xml.ws.BindingType;
@@ -33,7 +34,8 @@ public class ReservationServiceImpl implements ReservationService {
         return showingDao.getAll();
     }
 
-    public void addNewReservation(String places, Boolean isPaid, long userId, long showingId) {
+    public void addNewReservation(@WebParam(name = "places")String places, @WebParam(name = "isPaid")Boolean isPaid,
+                                  @WebParam(name = "userId")long userId, @WebParam(name = "showingId")long showingId) {
         User user = userDao.getById(userId);
         Showing showing = showingDao.getById(showingId);
         showing.setOccupiedPlaces(addReservedPlaces(places, showing.getOccupiedPlaces()));
@@ -69,7 +71,7 @@ public class ReservationServiceImpl implements ReservationService {
         return String.join(";", freePlacesAsList);
     }
 
-    public boolean ifPlacesFree(String places, long showingId) {
+    public boolean ifPlacesFree(@WebParam(name = "places")String places, @WebParam(name = "showingId")long showingId) {
         Showing showing = showingDao.getById(showingId);
         List<String> freePlaces = new ArrayList<>(Arrays.asList(showing.getFreePlaces().split(";")));
         String[] reservedPlaces = places.split(";");
@@ -81,22 +83,24 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public List<Reservation> getUserReservationsByPesel(String pesel) {
+    public List<Reservation> getUserReservationsByPesel(@WebParam(name = "pesel")String pesel) {
         return reservationDao.getReservationByPesel(pesel);
     }
 
     @Override
-    public List<Reservation> getUserReservationsByName(String firstName, String secondName) {
+    public List<Reservation> getUserReservationsByName(@WebParam(name = "firstName")String firstName,
+                                                       @WebParam(name = "secondName")String secondName) {
         return reservationDao.getReservationByName(firstName, secondName);
     }
 
     @Override
-    public User getUserByPesel(String pesel) {
+    public User getUserByPesel(@WebParam(name = "pesel")String pesel) {
         return userDao.getByPesel(pesel);
     }
 
     @Override
-    public void addUser(String firstName, String secondName, String pesel, String password) {
+    public void addUser(@WebParam(name = "firstName")String firstName, @WebParam(name = "secondName")String secondName,
+                        @WebParam(name = "pesel")String pesel,@WebParam(name = "password") String password) {
 
         User user = new User(firstName, secondName, pesel, encode(password));
         userDao.save(user);
@@ -112,18 +116,19 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public boolean checkIfUserExist(String pesel) {
+    public boolean checkIfUserExist(@WebParam(name = "pesel")String pesel) {
         return userDao.getByPesel(pesel) != null;
     }
 
     @Override
     @MTOM
-    public List<Showing> getShowingsByDate(int year, int month, int day) {
+    public List<Showing> getShowingsByDate(@WebParam(name = "year")int year, @WebParam(name = "month")int month,
+                                           @WebParam(name = "day")int day) {
         return showingDao.getByDate(year, month, day);
     }
 
     @Override
-    public boolean authorize(String pesel, String password) {
+    public boolean authorize(@WebParam(name = "pesel")String pesel, @WebParam(name = "password")String password) {
         User user = userDao.getByPesel(pesel);
         if (user == null)
             return false;
@@ -132,7 +137,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     @MTOM
-    public Image getImage(long id) {
+    public Image getImage(@WebParam(name = "movieId")long id) {
         Image image = null;
         ImageDao imageDao = new ImageDao();
         ByteArrayInputStream bis = new ByteArrayInputStream(imageDao.getByMovieId(id).getImage());
@@ -145,14 +150,15 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
 
-    public void deleteReservation(long id) {
+    public void deleteReservation(@WebParam(name = "reservationId")long id) {
         Reservation reservation = reservationDao.getById(id);
         Showing showing = reservation.getShowing();
         updateShowingPlaces(reservation.getPlaces(), showing);
         reservationDao.delete(reservationDao.getById(id));
     }
 
-    public void editReservation(long id, String newPlaces, boolean isPaid) {
+    public void editReservation(@WebParam(name = "reservationId")long id, @WebParam(name = "places")String newPlaces,
+                                @WebParam(name = "isPaid")boolean isPaid) {
         Reservation reservation = reservationDao.getById(id);
         Showing showing = reservation.getShowing();
         updateShowingPlaces(reservation.getPlaces(), showing);
@@ -165,7 +171,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @MTOM
-    public byte[] getPDFofReservation(long id) throws IOException, DocumentException {
+    public byte[] getPDFofReservation(@WebParam(name = "reservationId")long id) throws IOException, DocumentException {
         Reservation result = reservationDao.getById(id);
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream("resources/" + id + "_reservation.pdf"));
@@ -187,17 +193,17 @@ public class ReservationServiceImpl implements ReservationService {
         return Files.readAllBytes(f.toPath());
     }
 
-    public List<Reservation> getUserReservations(long userId) {
+    public List<Reservation> getUserReservations(@WebParam(name = "userId")long userId) {
         return reservationDao.getUserReservation(userId);
     }
 
     @MTOM
-    public Movie getMovieInfo(long movieId) {
+    public Movie getMovieInfo(@WebParam(name = "movieId")long movieId) {
         return movieDao.getById(movieId);
     }
 
     @MTOM
-    public Movie getMovieInfoByTitle(String title) {
+    public Movie getMovieInfoByTitle(@WebParam(name = "title")String title) {
         return movieDao.getByTitle(title);
     }
 }
