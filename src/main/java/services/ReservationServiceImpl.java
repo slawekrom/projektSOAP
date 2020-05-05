@@ -6,14 +6,13 @@ import dao.*;
 import db.model.*;
 
 import javax.imageio.ImageIO;
+import javax.jws.HandlerChain;
 import javax.jws.WebParam;
 import javax.jws.WebService;
-import javax.persistence.NoResultException;
 import javax.xml.ws.BindingType;
 import javax.xml.ws.soap.MTOM;
 import javax.xml.ws.soap.SOAPBinding;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.file.Files;
 import java.util.*;
@@ -22,6 +21,7 @@ import java.util.List;
 
 @WebService
 @BindingType(value = SOAPBinding.SOAP11HTTP_MTOM_BINDING)
+@HandlerChain(file="handler-chain.xml")
 public class ReservationServiceImpl implements ReservationService {
 
     ShowingDao showingDao = new ShowingDao();

@@ -1,6 +1,5 @@
 package services;
 
-import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import db.model.*;
 
@@ -8,10 +7,7 @@ import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
 import java.awt.Image;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Date;
 import java.util.List;
 
 @WebService
